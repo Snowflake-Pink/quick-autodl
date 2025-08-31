@@ -17,6 +17,15 @@ AutoDL/云主机一键初始化脚本。完成 conda 初始化、缓存与环境
 
 需要 root 权限执行（脚本会检测），执行完毕后请关闭并重新打开终端。
 
+镜像：
+
+```bash
+curl -fsSL https://raw.gitmirror.com/Snowflake-Pink/quick-autodl/main/quick-autodl.sh -o /tmp/quick-autodl.sh \
+  && sudo bash /tmp/quick-autodl.sh -y
+```
+
+或：
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Snowflake-Pink/quick-autodl/main/quick-autodl.sh -o /tmp/quick-autodl.sh \
   && sudo bash /tmp/quick-autodl.sh -y
@@ -38,4 +47,6 @@ curl -fsSL https://raw.githubusercontent.com/Snowflake-Pink/quick-autodl/main/qu
 
 - 运行完成后请新开一个终端，使环境变量与初始化生效。
 
+## Thanks
 
+* [chsrc](https://github.com/RubyMetric/chsrc)
