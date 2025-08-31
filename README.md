@@ -4,7 +4,7 @@ AutoDL/云主机一键初始化脚本。完成 conda 初始化、缓存与环境
 
 ## 功能
 
-- **缓存与目录重定向**：将 `~/.cache`、conda 的 `envs` 与 `pkgs` 迁移至 `/root/autodl-tmp` 下，节省系统盘并提高 I/O 性能。
+- **缓存与目录重定向**：将 `~/.cache`、conda 的 `envs` 与 `pkgs`、以及临时目录 `~/.tmp` 迁移至 `/root/autodl-tmp` 下（分别为 `.cache`、`.conda/{envs,pkgs}`、`.tmp`），节省系统盘空间。
 - **Shell 环境注入**：向 `~/.bashrc`、`~/.zshrc` 追加必要的环境变量（`XDG_CACHE_HOME`、`CONDA_ENVS_DIRS`、`CONDA_PKGS_DIRS`）。
 - **conda 初始化**：检测并执行 `conda init`（bash、zsh）。
 - **镜像加速（chsrc）**：自动安装 `chsrc`，仅切换 conda 与 pip 的镜像源。
@@ -12,6 +12,10 @@ AutoDL/云主机一键初始化脚本。完成 conda 初始化、缓存与环境
   - `defutf8 on`
   - `defencoding utf8`
   - `encoding UTF-8 UTF-8`
+-. **vim 编码修复**：向 `~/.vimrc` 追加 UTF-8 设置，减少乱码：
+  - `set termencoding=utf-8`
+  - `set encoding=utf8`
+  - `set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030`
 
 ## 一键使用
 

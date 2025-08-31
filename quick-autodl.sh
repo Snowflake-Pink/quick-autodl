@@ -15,6 +15,7 @@ CONDA_BASE_DIR="${TARGET_ROOT}/.conda"
 CONDA_ENVS_DIR="${CONDA_BASE_DIR}/envs"
 CONDA_PKGS_DIR="${CONDA_BASE_DIR}/pkgs"
 CACHE_TARGET="${TARGET_ROOT}/.cache"
+TMP_TARGET="${TARGET_ROOT}/.tmp"
 MARK_START="# >>> autodl quick setup >>>"
 MARK_END="# <<< autodl quick setup <<<"
 AUTO_YES=0
@@ -120,10 +121,13 @@ This script will perform:
    - ${CONDA_ENVS_DIR}
    - ${CONDA_PKGS_DIR}
    - ${CACHE_TARGET}
+   - ${TMP_TARGET}
 
-2) Configure cache:
+2) Configure cache & tmp:
    - Export XDG_CACHE_HOME=${CACHE_TARGET} in shell RC
    - Symlink ~/.cache -> ${CACHE_TARGET}
+   - Export TMPDIR/TEMP/TMP=${TMP_TARGET} in shell RC
+   - Symlink ~/.tmp -> ${TMP_TARGET}
 
 3) Configure conda:
    - Export CONDA_ENVS_DIRS=${CONDA_ENVS_DIR}
@@ -138,6 +142,9 @@ This script will perform:
 5) Configure screen UTF-8 defaults:
    - Ensure UTF-8 settings in ~/.screenrc
 
+6) Configure Vim UTF-8 defaults:
+   - Ensure UTF-8 settings in ~/.vimrc
+
 After completion: close this terminal and open a new one.
 EOF
 hr
@@ -145,7 +152,7 @@ confirm
 
 # ---------------------- actions ----------------------
 say "Creating target directories..."
-mkdir -p "${CONDA_ENVS_DIR}" "${CONDA_PKGS_DIR}" "${CACHE_TARGET}"
+mkdir -p "${CONDA_ENVS_DIR}" "${CONDA_PKGS_DIR}" "${CACHE_TARGET}" "${TMP_TARGET}"
 chown -R root:root "${TARGET_ROOT}"
 
 say "Configuring ~/.cache -> ${CACHE_TARGET} and XDG_CACHE_HOME..."
@@ -159,6 +166,9 @@ ENV_BLOCK=$(cat <<EOT
 export XDG_CACHE_HOME="${CACHE_TARGET}"
 export CONDA_ENVS_DIRS="${CONDA_ENVS_DIR}"
 export CONDA_PKGS_DIRS="${CONDA_PKGS_DIR}"
+export TMPDIR="${TMP_TARGET}"
+export TEMP="${TMP_TARGET}"
+export TMP="${TMP_TARGET}"
 EOT
 )
 append_block_once "${BASHRC}" "${ENV_BLOCK}"
@@ -168,6 +178,12 @@ append_block_once "${ZSHRC}"  "${ENV_BLOCK}"
 export XDG_CACHE_HOME="${CACHE_TARGET}"
 export CONDA_ENVS_DIRS="${CONDA_ENVS_DIR}"
 export CONDA_PKGS_DIRS="${CONDA_PKGS_DIR}"
+export TMPDIR="${TMP_TARGET}"
+export TEMP="${TMP_TARGET}"
+export TMP="${TMP_TARGET}"
+
+say "Configuring ~/.tmp -> ${TMP_TARGET} and TMPDIR/TEMP/TMP..."
+safe_symlink "${TMP_TARGET}" "${HOME}/.tmp"
 
 say "Looking for conda..."
 if ! command -v conda >/dev/null 2>&1; then
@@ -211,6 +227,17 @@ encoding UTF-8 UTF-8
 EOT
 )
 append_block_once "${SCREENRC}" "${SCREEN_BLOCK}"
+
+say "Configuring ~/.vimrc for UTF-8 defaults..."
+VIMRC="${HOME}/.vimrc"
+VIM_BLOCK=$(cat <<'EOT'
+" Vim UTF-8 defaults
+set termencoding=utf-8
+set encoding=utf8
+set fileencodings=utf8,ucs-bom,gbk,cp936,gb2312,gb18030
+EOT
+)
+append_block_once "${VIMRC}" "${VIM_BLOCK}"
 
 hr
 say "Done."
